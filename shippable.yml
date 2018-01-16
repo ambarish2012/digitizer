@@ -13,7 +13,7 @@ resources:
     type: gitRepo
     integration: dr-github
     pointer:
-      sourceName: devops-recipes/digitizer
+      sourceName: ambarish2012/digitizer
       branch: master
       buildOnCommit: false # We don't want to automatically update this resource
 
@@ -21,7 +21,7 @@ resources:
     type: gitRepo
     integration: dr-github
     pointer:
-      sourceName: devops-recipes/digitizer
+      sourceName: ambarish2012/digitizer
       branch: master
       buildOnCommit: false # We don't want to automatically update this resource
 
