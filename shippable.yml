@@ -1,43 +1,51 @@
 language: node_js
 
-branches:
-  only:
-    - master
-
 env:
   - ENV=dev
 
 build:
   ci:
     - terraform --version
-    
+
   post_ci:
-    - if [ $IS_PULL_REQUEST == "false" ] ; then shipctl put_resource_state  deploy-nodecluster-gitRepo-repo "versionName" $(shipctl get_resource_version_name deploy-nodecluster-basic_ciRepo); fi;
-    
+    - if [ $IS_PULL_REQUEST == "false" ] ; then shipctl put_resource_state  digitizerGitRepoDevInfra "versionName" $(shipctl get_resource_version_name digitizer_ciRepo); fi;
+    - if [ $IS_PULL_REQUEST == "false" ] ; then jq -M --argfile ciRepo $DIGITIZER_CIREPO_PATH/version.json '.version.propertyBag.shaData = $ciRepo.version.propertyBag.shaData' $DIGITIZERGITREPODEVINFRA_PATH/version.json > tmp.json && mv tmp.json $DIGITIZERGITREPODEVINFRA_PATH/version.json; fi;
+
 resources:
-#  - name: digitizerGitRepo
-#    type: gitRepo
-#    integration: github
-#    pointer:
-#      sourceName: automonkey/digitizer
-#      branch: master
+ - name: digitizerGitRepoDevInfra
+   type: gitRepo
+   integration: github
+   pointer:
+     sourceName: devops-recipes/digitizer
+     branch: master
+     buildOnCommit: false # We don't want to automatically update this resource
+
+ - name: digitizerGitRepoDevApp
+   type: gitRepo
+   integration: github
+   pointer:
+     sourceName: devops-recipes/digitizer
+     branch: master
+     buildOnCommit: false # We don't want to automatically update this resource
 
 jobs:
-#  - name: digitizer_runCI
-#    type: runCI
-#    steps:
-#      - OUT: build-id
-#
+ - name: digitizer_runCI
+   type: runCI
+   steps:
+     - OUT: digitizerGitRepoDevInfra
+
   - name: digitizer_deploy_dev_infra
     type: runSh
     steps:
-      - IN: digitizer_runCI
+      - IN: digitizerGitRepoDevInfra
       - TASK:
-        - script: ENV=dev ./build-scripts/deploy-infra.sh
+        - script: echo "digitizer_deploy_dev_infra job is running"
+      - OUT: digitizerGitRepoDevApp
+        replicate: digitizerGitRepoDevInfra
 
   - name: digitizer_deploy_dev_app
     type: runSh
     steps:
-      - IN: digitizer_runCI
+      - IN: digitizerGitRepoDevApp
       - TASK:
-        - script: ENV=dev ./build-scripts/deploy-app.sh
+        - script: echo "digitizer_deploy_dev_app job is running"
