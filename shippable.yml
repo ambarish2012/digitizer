@@ -11,7 +11,7 @@ build:
 resources:
   - name: digitizerGitRepoDevInfra
     type: gitRepo
-    integration: dr-github
+    integration: github
     pointer:
       sourceName: ambarish2012/digitizer
       branch: master
@@ -19,7 +19,7 @@ resources:
 
   - name: digitizerGitRepoDevApp
     type: gitRepo
-    integration: dr-github
+    integration: github
     pointer:
       sourceName: ambarish2012/digitizer
       branch: master
