@@ -1,0 +1,43 @@
+language: node_js
+
+branches:
+  only:
+    - master
+
+env:
+  - ENV=dev
+
+build:
+  ci:
+    - terraform --version
+    
+  post_ci:
+    - if [ $IS_PULL_REQUEST == "false" ] ; then shipctl put_resource_state  deploy-nodecluster-gitRepo-repo "versionName" $(shipctl get_resource_version_name deploy-nodecluster-basic_ciRepo); fi;
+    
+resources:
+#  - name: digitizerGitRepo
+#    type: gitRepo
+#    integration: github
+#    pointer:
+#      sourceName: automonkey/digitizer
+#      branch: master
+
+jobs:
+#  - name: digitizer_runCI
+#    type: runCI
+#    steps:
+#      - OUT: build-id
+#
+  - name: digitizer_deploy_dev_infra
+    type: runSh
+    steps:
+      - IN: digitizer_runCI
+      - TASK:
+        - script: ENV=dev ./build-scripts/deploy-infra.sh
+
+  - name: digitizer_deploy_dev_app
+    type: runSh
+    steps:
+      - IN: digitizer_runCI
+      - TASK:
+        - script: ENV=dev ./build-scripts/deploy-app.sh
