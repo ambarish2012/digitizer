@@ -19,7 +19,7 @@ resources:
 
   - name: digitizerGitRepoDevApp
     type: gitRepo
-    integration: github
+    integration: dr-github
     pointer:
       sourceName: devops-recipes/digitizer
       branch: master
