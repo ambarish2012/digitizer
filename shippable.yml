@@ -10,6 +10,9 @@ resources:
     integration: github
     versionTemplate:
       sourceName: ambarish2012/pr-runsh-sample
+      # Remove branch below if you want PRs to be triggered for all branches.
+      # If you want to trigger for some branches but not others, use branches tag
+      # as documented here: http://docs.shippable.com/platform/workflow/resource/gitrepo/#gitrepo
       branch: master
       buildOnCommit: false 
       buildOnPullRequest: true
