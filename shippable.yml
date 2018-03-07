@@ -25,7 +25,7 @@ jobs:
     steps:
       - IN: prgitRepo
       - TASK:
-        - script:
+          script:
             # cd into the directory where the repository is checked out
             - pushd $(shipctl get_resource_state prgitRepo)
             - ./runtests.sh
