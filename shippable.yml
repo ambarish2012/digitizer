@@ -24,4 +24,8 @@ jobs:
     steps:
       - IN: prgitRepo
       - TASK:
-        - script: echo "triggered for PR requests"
+        - script:
+            # cd into the directory where the repository is checked out
+            - pushd $(shipctl get_resource_state prgitRepo)
+            - ./runtests.sh
+            
