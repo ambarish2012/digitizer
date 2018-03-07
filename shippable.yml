@@ -21,6 +21,7 @@ jobs:
 
   - name: runPrTests
     type: runSh
+    allowPublicAccess: true
     steps:
       - IN: prgitRepo
       - TASK:
