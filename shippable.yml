@@ -2,47 +2,24 @@ language: node_js
 
 build:
   ci:
-    - terraform --version
-
-  post_ci:
-    - if [ $IS_PULL_REQUEST == "false" ] ; then shipctl put_resource_state  digitizerGitRepoDevInfra "versionName" $(shipctl get_resource_version_name digitizer_ciRepo); fi;
-    - if [ $IS_PULL_REQUEST == "false" ] ; then jq -M --argfile ciRepo $DIGITIZER_CIREPO_PATH/version.json '.version.propertyBag.shaData = $ciRepo.version.propertyBag.shaData' $DIGITIZERGITREPODEVINFRA_PATH/version.json > tmp.json && mv tmp.json $DIGITIZERGITREPODEVINFRA_PATH/version.json; fi;
+    - echo "In CI"
 
 resources:
-  - name: digitizerGitRepoDevInfra
-    type: gitRepo
-    integration: github
-    pointer:
-      sourceName: ambarish2012/digitizer
-      branch: master
-      buildOnCommit: false # We don't want to automatically update this resource
 
-  - name: digitizerGitRepoDevApp
+  - name: prgitRepo
     type: gitRepo
     integration: github
-    pointer:
+    versionTemplate:
       sourceName: ambarish2012/digitizer
       branch: master
-      buildOnCommit: false # We don't want to automatically update this resource
+      buildOnCommit: false 
+      buildOnPullRequest: true
 
 jobs:
-  - name: digitizer_runCI
-    type: runCI
-    steps:
-      - OUT: digitizerGitRepoDevInfra
 
-  - name: digitizer_deploy_dev_infra
+  - name: runPrTests
     type: runSh
     steps:
-      - IN: digitizerGitRepoDevInfra
+      - IN: prgitRepo
       - TASK:
-        - script: echo "digitizer_deploy_dev_infra job is running"
-      - OUT: digitizerGitRepoDevApp
-        replicate: digitizerGitRepoDevInfra
-
-  - name: digitizer_deploy_dev_app
-    type: runSh
-    steps:
-      - IN: digitizerGitRepoDevApp
-      - TASK:
-        - script: echo "digitizer_deploy_dev_app job is running"
+        - script: echo "triggered for PR requests"
