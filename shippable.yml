@@ -10,7 +10,7 @@ resources:
     type: gitRepo
     integration: github
     versionTemplate:
-      sourceName: ambarish2012/digitizer
+      sourceName: ambarish2012/pr-runsh-sample
       branch: master
       buildOnCommit: false 
       buildOnPullRequest: true
